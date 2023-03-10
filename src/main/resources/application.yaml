@@ -5,3 +5,18 @@ spring:
     password: ${MYSQL_PASSWORD}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     initialization-mode: "always"
+  batch:
+    jdbc:
+      #initialize-schema: always
+      platform: mysql
+    job:
+      enabled: false
+
+integration:
+  file:
+    students:
+      #source: /src/test/resources/lista_alunos.txt
+      source: lista_alunos.txt
+      delimiter: ""
+      load: true   # Make true to load initial batch load from students
+      chunk-size: 1000
