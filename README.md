@@ -1,5 +1,7 @@
 # CREDIT CARD STUDENT BATCH
 
+Aplicativo para carga/processamento **em lote** dos dados dos alunos.
+
 ---
 <!-- 
 # OVERVIEW
@@ -22,13 +24,13 @@ https://github.com/zanella86/CreditCardStudentWeb
 
 # FERRAMENTAS / TECNOLOGIAS
 
-<!-- - [Draw.io](https://app.diagrams.net/) -->
-- Git / Github
-- Gradle 7.6
+- Java 17.0.2
+- Git 2.31.1.windows.1 / Github
+- Gradle 7.6.1
 - IntelliJ IDEA Community Edition (2022.2.1)
-- MySQL Workbench 8.0 CE
+- MySQL Workbench 8.0.31 CE
 - Spring Boot 3.0.4 (Java 17+)
-- Spring Batch
+- Spring Batch 5.0.1
 
 ---
 
@@ -57,9 +59,9 @@ https://github.com/zanella86/CreditCardStudentWeb
 
 ![MySQL-Create-Schema](docs/mysql-schema-create.PNG)
 
-## Aplicação
+## IDE
 
-### IDE
+### Intellij
 
 Adicione os parâmetros para conexão:
 
@@ -67,12 +69,22 @@ Adicione os parâmetros para conexão:
 
 ![Intellij-bootRun-Arguments](docs/intellij-bootrun-arguments.PNG)
 
+## Aplicação
+
+> Antes de executar esta aplicação, é importante executar a aplicação do projeto [Web](https://github.com/zanella86/CreditCardStudentWeb) <u>ao menos uma vez</u> para que as entidades sejam criadas corretamente.
+
 ---
 
 # REFERÊNCIAS
 
 - [Prof.º Fabio Tadashi - Travel](https://github.com/fabiotadashi/1SCJR-travel)
 - [Spring Initializr](https://start.spring.io/;)
+- [Spring Batch - Reference Documentation](https://docs.spring.io/spring-batch/docs/current/reference/html/index.html) 
 - [Baeldung - Spring Boot with Spring Batch](https://www.baeldung.com/spring-boot-spring-batch)
+- [Baeldung - Configuring Skip Logic in Spring Batch](https://www.baeldung.com/spring-batch-skip-logic)
+- [StackOverFlow - How to skip blank lines in CSV using FlatFileItemReader and chunks](https://stackoverflow.com/questions/29673524/how-to-skip-blank-lines-in-csv-using-flatfileitemreader-and-chunks)
 - [StackOverFlow - How to solve deprecation warning of JobBuilderFactory and StepBuilderFactory](https://stackoverflow.com/questions/75508267/how-to-solve-deprecation-warning-of-jobbuilderfactory-and-stepbuilderfactory)
   - [Spring Batch 5.0 Migration Guide](https://github.com/spring-projects/spring-batch/wiki/Spring-Batch-5.0-Migration-Guide)
+- [Um guia para o Spring Batch 5.0](https://www.youtube.com/watch?v=Jzf9ofPy_xk)
+  - [Giuliana Bezerra / guide-sb-v5](https://github.com/giuliana-bezerra/guide-sb-v5)
+- [Craftsmen - Processing files with fixed line length using Spring Batch](https://craftsmen.nl/processing-files-with-fixed-line-length-using-spring-batch/)
