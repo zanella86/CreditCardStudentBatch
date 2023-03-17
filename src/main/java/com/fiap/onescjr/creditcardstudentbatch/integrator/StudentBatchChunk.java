@@ -35,23 +35,21 @@ public class StudentBatchChunk {
     @Bean
     public FixedLengthTokenizer fixedLengthTokenizer() {
         FixedLengthTokenizer fixedLengthTokenizer = new FixedLengthTokenizer();
-        fixedLengthTokenizer.setNames("name", "id", "cardCode");
+        fixedLengthTokenizer.setNames("register");
         fixedLengthTokenizer.setColumns(
-                new Range(1,41),    //name
-                new Range(42,49),   //id
-                new Range(50,55)    //cardCode
+                new Range(1,55) // Posição do registro completo
         );
         return fixedLengthTokenizer;
     }
 
-    private RecordSeparatorPolicy removeBlankLine() {
+    private RecordSeparatorPolicy removeInvalidLine() {
         return new SimpleRecordSeparatorPolicy() {
             @Override
             public boolean isEndOfRecord(String line) {
-                if(line.trim().length() == 0) {
-                    return false;
+                if(line.trim().length() == 0 /* || line.trim().contains("\u001A") */ ) {
+                    return false;   // Desconsidera as linhas sem dados/inválidas
                 }
-                return super.isEndOfRecord(line);
+                return true;
             }
         };
     }
@@ -65,11 +63,17 @@ public class StudentBatchChunk {
         return new FlatFileItemReaderBuilder<StudentIn>()
                 .name("FileReader")
                 .resource(resource)
+                .encoding("UTF-8")
                 .strict(true)
-                .comments("--") // FIXME: Nem todos os comentários são removidos..
-                .recordSeparatorPolicy(removeBlankLine())
+                /*
+                BUG do Spring Batch 5.0.1?
+                    Somente o primeiro comentário "..-A-.." está sendo removido do arquivo, no entanto,
+                    .comments("--"), de acordo com a documentação deveria ignorar todos os comentários do arquivo
+                 */
+                //.comments("--", "---------------------------B---------------------------") //
+                .recordSeparatorPolicy(removeInvalidLine())
                 .lineTokenizer(fixedLengthTokenizer)
-                .targetType(StudentIn.class)
+                .targetType(StudentIn.class)    // Objeto para "Stage" dos dados
                 .build();
     }
 
@@ -77,12 +81,24 @@ public class StudentBatchChunk {
     public ItemProcessor<StudentIn, StudentOut> itemProcessor() {
         return studentIn -> {
             StudentOut studentOut = new StudentOut();
-            studentOut.setName(studentIn.getName().trim());
-            studentOut.setId(Long.valueOf(studentIn.getId()));
-            studentOut.setCardCode(studentIn.getCardCode());
+
+            // Alternativa ao FlatFileItemReaderBuilder.comments("-")
+            if(studentIn.getRegister().startsWith("-")) {
+                log.warn("[COMENTÁRIO REMOVIDO]: " + studentIn.getRegister());
+                return null;    // Desconsidera as linhas com comentários
+            }
+
+            /*if(studentIn.getRegister().contains("\u001A")) {
+                log.warn("FINAL DO ARQUIVO");
+                return null;    // FIXME O caractér \u001A ([SUB]) não é reconhecido no final do arquivo
+            }*/
+
+            studentOut.setName(studentIn.getRegister().substring(0,40));
+            studentOut.setId(Long.valueOf(studentIn.getRegister().substring(41,48)));
+            studentOut.setCardCode(studentIn.getRegister().substring(49,55));
             log.info(String.format(
                     "Registro processado...: %s | %s | %s",
-                    studentIn.getName(), studentIn.getId(), studentIn.getCardCode())
+                    studentOut.getName(), studentOut.getId(), studentOut.getCardCode())
             );
             return studentOut;
         };

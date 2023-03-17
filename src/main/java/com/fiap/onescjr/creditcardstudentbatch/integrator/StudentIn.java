@@ -6,7 +6,5 @@ import lombok.Setter;
 @Setter
 @Getter
 public class StudentIn {
-    private String name;
-    private String id;
-    private String cardCode;
+    private String register;
 }
