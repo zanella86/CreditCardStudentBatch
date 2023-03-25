@@ -6,5 +6,5 @@ import lombok.Setter;
 @Setter
 @Getter
 public class StudentIn {
-    private String student;
+    private String register;
 }
